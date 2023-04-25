@@ -1,0 +1,58 @@
+% Set the number of samples in the signal
+N = 1000;
+
+% Set the sampling frequency of the signal
+fs = 1000;
+
+% Set the frequency of the signal
+f = 10;
+
+% Set the amplitude of the signal
+A = 1;
+
+% Set the maximum quantization level
+Q = 10;
+
+% Generate the signal as a sinusoidal waveform
+t = (0:N-1)'/fs;  % time vector
+x = A*sin(2*pi*f*t); % sinusoidal signal
+
+% Compute the SQNR for each quantization level
+sqnr = zeros(Q, 1); % initialize SQNR vector
+for q = 1:Q
+    % Quantize the signal using uniform quantization
+    xq = round(x*(2^(q-1))/A)*(A/(2^(q-1)));
+
+    % Compute the quantization error and the SQNR
+    e = x - xq;
+    sqnr(q) = 10*log10(var(x)/var(e)); % signal-to-quantization-noise ratio
+end
+
+% Plot the SQNR versus quantization levels
+plot(1:Q, sqnr, 'o-')
+xlabel('Quantization Levels')
+ylabel('Signal-to-Quantization-Noise Ratio (dB)')
+title('Uniform Quantization SQNR vs. Quantization Levels')
+
+
+for non uniform quantization
+fs = 1000;: Sampling frequency of the input signal is set to 1000 Hz.
+t = 0:1/fs:1;: A time vector is created from 0 to 1 second with a step size of 1/fs.
+f1 = 10; 
+f2 = 50;: Two frequencies, 10 Hz and 50 Hz are defined.
+x = sin(2*pi*f1*t) + 0.5*sin(2*pi*f2*t);: The input signal is defined as the sum of two sine waves with the two frequencies defined earlier.
+num_levels = 2:20;: The number of quantization levels is defined as an array from 2 to 20.
+snrq = zeros(size(num_levels));: A zero vector of the same size as the number of quantization levels is created to store the SNR values for each level.
+for i = 1:length(num_levels): Loop over each quantization level.
+levels = linspace(min(x), max(x), num_levels(i));: The input signal is divided into intervals based on the number of quantization levels.
+intervals = [levels(1), (levels(2:end-1)+levels(3:end))/2, levels(end)];: The midpoints of the intervals are computed and stored in an array.
+xq = interp1(intervals, 1:num_levels(i), x, 'nearest');: The input signal is quantized by mapping each sample to the closest interval midpoint.
+eq = x - interp1(1:num_levels(i), intervals, xq);: The quantization error is computed as the difference between the input signal and the quantized signal.
+mse = mean(eq.^2);: The mean squared error is computed.
+sig_power = mean(x.^2);: The signal power is computed.
+snrq(i) = 10*log10(sig_power/mse);: The SNR is computed in dB and stored in the snrq vector.
+end
+plot(num_levels, snrq, 'o-');: A plot of SNR vs. quantization levels is generated.
+xlabel('Number of Quantization Levels');: X-axis label is set.
+ylabel('SNRQ (dB)');: Y-axis label is set.
+title('SNRQ vs. Quantization Levels for Non-Uniform Quantization');: Title of the plot is set.
