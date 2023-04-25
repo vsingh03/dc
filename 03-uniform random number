@@ -1,0 +1,48 @@
+% Clear any previously defined variables from the workspace
+clear;
+
+% Close any previously opened figures
+close all;
+
+% Clear the command window
+clc;
+
+% Set the number of points to generate for the range of the uniform distribution
+n = 1000;
+
+% Set the lower and upper limits of the uniform distribution
+a = 0;
+b = 6;
+
+% Calculate the mean and variance of the uniform distribution
+mu = (b + a) / 2;
+v = ((b - a) ^ 2) / 12;
+sigma2 = v;
+
+% Define the range of values for the uniform distribution
+range = -3 : 0.1 : 3;
+
+% Display the size of the range vector
+size(range)
+
+% Create a vector of PDF values for the uniform distribution
+pdfu = 1 / (b - a) * range .^ 0;
+
+% Create a subplot for the PDF plot
+subplot(2, 1, 1);
+
+% Plot the PDF of the uniform distribution
+plot(range, pdfu);
+
+% Create a vector of CDF values for the uniform distribution
+cdfu = cdf('Uniform', range, -3, 3);
+
+% Create a subplot for the CDF plot
+subplot(2, 1, 2);
+
+% Plot the CDF of the uniform distribution
+plot(range, cdfu);
+
+% Display the mean and variance of the uniform distribution
+disp(mu);
+disp(v);
