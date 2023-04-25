@@ -1,0 +1,13 @@
+clear
+close all
+syms t w;
+x=1;
+expw=exp(-1*1i*w*t);
+z=int(x*expw,w,-5,5);
+z=simplify(z);
+subplot(2,1,1);
+fplot(‘1’,[-5,5]);
+subplot(2,1,2);
+fplot(z);
+fplot(‘1’,[-5,5]);
+fplot(z);
