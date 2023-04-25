@@ -1,0 +1,84 @@
+Time shifting
+clc
+clear all
+close all
+t=0:0.001:0.1-0.001;  % Creates a time vector t from 0 to 0.099 with a step of 0.001
+fs=1e3;               % Sets the sampling frequency to 1000 Hz
+freq1=100;            % Sets the frequency of the cosine wave to 100 Hz
+x1=cos(2*pi*freq1*t); % Generates a cosine wave with frequency freq1 and time vector t
+Delay=2;              % Sets the delay to 2 seconds
+yp=fft(x1);           % Performs the Fast Fourier Transform of x1 and stores the result in yp
+yp=yp(1:length(x1)/2+1); % Truncates yp to half of its length plus one
+f=0:fs/length(x1):500; % Creates a frequency vector f from 0 to 500 Hz
+yp=yp.*exp(-1i*2*pi*f*Delay*(1/fs)); % Applies a phase shift to yp based on the delay
+yp=[yp conj(fliplr(yp(2:end-1)))]; % Reconstructs the full spectrum of yp using its conjugate
+y=ifft(yp,'symmetric'); % Performs the Inverse Fourier Transform of yp and stores the result in y
+plot(t(1:100),x1(1:100),'b'); % Plots the first 100 samples of x1 in blue
+hold on;              % Keeps the current plot and adds the next one
+plot(t(1:100),y(1:100),'r');  % Plots the first 100 samples of y in red
+
+Freq shifting
+clc            % Clears the command window
+clear all      % Clears all workspace variables
+close all      % Closes all figures
+t=linspace(0,1,1000);  % Creates a time vector `t` from 0 to 1 with 1000 points
+S=sin(2*pi*100*t);     % Generates a sinusoidal signal `S` with frequency 100 Hz
+Sc=sin(2*pi*50*t);     % Generates another sinusoidal signal `Sc` with frequency 50 Hz
+HS=S.*Sc;              % Computes the element-wise product of `S` and `Sc` to generate `HS`
+Fs=1000;               % Sets the sampling frequency to 1000 Hz
+Fn=Fs/2;               % Sets the Nyquist frequency to half the sampling frequency
+FT1=fft(S)/length(S);  % Computes the FFT of `S` and normalizes it by its length
+FT2=fft(HS)/length(HS); % Computes the FFT of `HS` and normalizes it by its length
+Fv=linspace(0,1,fix(length(FT1)/2)+1)*Fn; % Creates a frequency vector from 0 to the Nyquist frequency
+Iv=1:length(Fv);       % Sets the index vector to the length of the frequency vector
+figure(1)              % Creates a new figure
+subplot(2,1,1);        % Creates a 2-row, 1-column plot and sets the first subplot as the active one
+plot(Fv,2*abs(FT1(Iv))) % Plots the frequency spectrum of `S` multiplied by 2
+grid                   % Adds a grid to the plot
+subplot(2,1,2)         % Sets the second subplot as the active one
+plot(Fv,2*abs(FT2(Iv))) % Plots the frequency spectrum of `HS` multiplied by 2
+grid                   % Adds a grid to the plot
+
+
+convolution                                                                                                                                                                   
+clear variables
+close all
+n= -20:20;
+x=sin(n);
+h=[-1,-2,8,-2,-1];
+N=length(x);
+M=length(h);
+Ny=N+M-1;
+y=zeroes(1,Ny);
+for i=1:N
+ for k=1:M
+ y(i+k-1)=y(i+k-1)+h(k)*x(i);
+ end
+end
+m=0:Ny-1;
+figure
+stem(m,y,'linewidth',3,'color','m')
+grid;
+a=title('output of an LTI Systm y(n)');
+set(a,'fontsize',14);
+a=ylabel('y(n)');
+set(a,'fontsize',14);
+a=xlabel('n');
+set(a,'fontsize',14);
+figure
+y2=conv(x,h);
+stem(m,y2,'linewidth',3,'color','r')
+grid;
+a=title('output y(n) using conv(x,h)');
+set(a,'fontsize',14);
+a=ylabel('y(n)');
+set(a,'fontsize',14);
+a=xlabel('n');
+set(a,'fontsize',14);
+//explanation of convolution:
+This MATLAB code demonstrates how to perform linear convolution of two signals using the convolution equation and built-in function conv().
+First, the script clears all variables, closes all figures and creates two signals x and h. The length of x is defined as N and the length of h is defined as M.
+Then, the length of the output signal y is defined as Ny = N + M - 1 and is initialized as a vector of zeros.
+The linear convolution is then calculated by looping through each sample of the input signal x, multiplying it with each sample of the impulse response h, and adding the result to the corresponding location in the output signal y. This is done using the for loop with two nested loops.
+After the convolution is performed, two figures are created using the stem() function to plot the output signal y with the title(), xlabel(), and ylabel() functions to add labels to the plot.
+The first figure shows the output of an LTI system y(n) using the convolution equation, and the second figure shows the output y(n) using the built-in conv() function. The two plots should be identical, confirming that the convolution equation and the conv() function produce the same result.
