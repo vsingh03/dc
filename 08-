@@ -1,0 +1,68 @@
+Given is a linear block code with the generator matrix G
+G = 1 1 0 0 1 0 1
+0 1 1 1 1 0 0
+1 1 1 0 0 1 1
+a. Calculate the number of valid code words N and the code rate RC. Specify the complete
+code set C.
+b. Determine the generator matrix G′ of the appropriate systematic (separable) code C’.
+
+part(a) code:
+% Clear the console, clear all variables from the workspace, and close all figures
+clc;
+clear;
+close all;
+
+% Define the generator matrix G
+G=[1 1 0 0 1 0 1; 0 1 1 1 1 0 0; 1 1 1 0 0 1 1];
+
+% Get the size of the generator matrix
+sz=size(G);
+
+% Extract the number of rows from the generator matrix (which is the number of message bits)
+k=sz(1);
+
+% Calculate the number of possible codewords
+sa=2.^k-1;
+
+% Generate all possible combinations of message bits
+M=1:sa;
+X=de2bi(M);
+
+% For each possible message, compute the corresponding codeword using the generator matrix G
+for i=1:size(X)
+ codeword=mod(X(i,1:k)*G,2);
+end
+
+
+
+
+part(b) code:
+clear; clc;: These are just commands to clear the workspace and command window.
+
+G=[1 1 0 0 1 0 1; 0 1 1 1 1 0 0; 1 1 1 0 0 1 1];: This line defines the generator matrix G for the code. The matrix has 3 rows and 7 columns.
+
+G(3,:)=mod(G(3,:)+G(1,:),2);: This line modifies the third row of the generator matrix to make it a systematic code. This is done by adding the first row of the matrix to the third row (with modulo-2 arithmetic) and updating the third row.
+
+G(2,:)=mod(G(2,:)+G(3,:),2);: Similarly, this line modifies the second row of the generator matrix to make it a systematic code by adding the updated third row to the second row.
+
+G(1,:)=mod(G(1,:)+G(2,:),2);: Again, this line modifies the first row of the generator matrix to make it a systematic code by adding the updated second row to the first row.
+
+sz=size(G);: This line finds the size of the generator matrix.
+
+k=sz(1);: This line sets the value of k to the number of rows in the generator matrix (i.e., the number of message bits).
+
+n=sz(2);: This line sets the value of n to the number of columns in the generator matrix (i.e., the number of codeword bits).
+
+rangeM=2^k-1;: This line sets the maximum message value that can be transmitted. The maximum value of the message corresponds to all message bits being 1.
+
+M=0:rangeM;: This line creates a vector of all possible message values between 0 and rangeM.
+
+M=de2bi(M,'left-msb');: This line converts the decimal message values to binary, with the left-most bit as the most significant bit.
+
+codeword=[];: This line initializes an empty matrix to store the codewords.
+
+for i=1:size(M) 
+codeword=[codeword; mod(M(i,1:k)*G,2)]; 
+end: This line computes the codewords for each message value using matrix multiplication of the message and generator matrices, followed by modulo-2 arithmetic. The codewords are stored in the codeword matrix.
+
+Codeword;: This line is invalid as it has a typo, it should be codeword. It does not affect the functionality of the code, but it does not output anything since there is no disp or fprintf function used to display the codeword matrix.
