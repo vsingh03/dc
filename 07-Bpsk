@@ -1,0 +1,52 @@
+% Clear the command window, clear all variables, and close all figures
+clc;
+clear;
+close all;
+
+% Define the number of bits in the signal
+N = 10 ^ 6;
+
+% Generate the input signal with random bits
+a = rand(1, N) > 0.5;
+
+% Convert bits to BPSK signal with amplitude 2 and -2
+s = 2 * a - 1;
+
+% Define a range of SNR values in dB
+snr_dB = 1:1:10;
+
+% Compute the SNR ratio from dB values
+snr_ratio = 10.^snr_dB/10;
+
+% Generate additive white Gaussian noise with unit variance
+n = 1 / sqrt(2).*randn(1,N);
+
+% Loop over each SNR value and simulate the BPSK system
+for i = 1:length (snr_dB)
+
+% Add noise to the BPSK signal to create the received signal
+y = 10 * (snr_dB(i) / 20).*s + n;
+
+% Perform detection by thresholding the received signal at zero
+a_dec = real (y) > 0;
+
+% Count the number of bit errors in the received signal
+nErr(i) = size (find(a - a_dec), 2);
+end
+
+% Compute the simulated bit error rate (BER)
+simBer = nErr / N;
+
+% Compute the theoretical bit error rate for BPSK modulation
+theoryBer = 0.5 * erfc(sqrt(10.^(snr_dB / 10)));
+
+% Plot the theoretical and simulated BER vs SNR
+figure
+semilogy(snr_dB, theoryBer, 'b-', 'LineWidth', 1.5);
+hold ON
+semilogy (snr_dB, simBer, 'x', 'MarkerSize', 8);
+grid ON
+legend ('Theory', 'simulation');
+xlabel ('SNR_dB -->');
+ylabel ('Bit Error Rate -->');
+title ('Bit Error Probability Curve for BPSK Modulation');
