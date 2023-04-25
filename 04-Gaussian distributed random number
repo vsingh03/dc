@@ -1,0 +1,40 @@
+% Clear any previously defined variables from the workspace
+clear;
+
+% Close any previously opened figures
+close all;
+
+% Clear the command window
+clc;
+
+% Set the number of points to generate for the range of the normal distribution
+n = 1000;
+
+% Generate a vector of n samples from the standard normal distribution
+r = randn(1, n);
+
+% Calculate the mean and variance of the generated samples
+mu = mean(r);
+v = var(r);
+sigma2 = var(r);
+
+% Define the range of values for the normal distribution
+range = -3 : 0.1 : 3;
+
+% Create a vector of PDF values for the normal distribution
+pdfn = 1 / (sqrt(2 * pi * sigma2)) * exp(-((range - mu) .^ 2) / (2 * sigma2));
+
+% Create a subplot for the PDF plot
+subplot(2, 1, 1);
+
+% Plot the PDF of the normal distribution
+plot(range, pdfn);
+
+% Create a vector of CDF values for the normal distribution
+cdfn = cdf('Normal', range, mu, sqrt(sigma2));
+
+% Create a subplot for the CDF plot
+subplot(2, 1, 2);
+
+% Plot the CDF of the normal distribution
+plot(range, cdfn);
